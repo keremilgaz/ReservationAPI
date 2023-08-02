@@ -16,6 +16,16 @@ namespace Reservation.api.DTO
         {
             // Default constructor
         }
+        public ReservationDTO(ReservationEntity reservation)
+        {
+            Name = reservation.Name;
+            StartDate = reservation.StartDate;
+            EndDate = reservation.EndDate;
+            Hour = reservation.Hour;
+            Duration = reservation.Duration;
+            EndDate = reservation.EndDate;
+
+        }
 
         public ReservationEntity ToReservationEntity()
         {
