@@ -62,7 +62,20 @@ namespace Reservation.api.Controllers
             return Ok("Rezervasyon başarılı");
         }
 
+        [HttpDelete]
+        [Route("Delete")]
 
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _RezContext.Reservations.SingleOrDefaultAsync(x => x.Id == id);
+            if (item != null)
+            {
+                _RezContext.Remove(item);
+                await _RezContext.SaveChangesAsync();
+                return NoContent();
+            }
+            return NotFound();
+        }
 
     }
 
