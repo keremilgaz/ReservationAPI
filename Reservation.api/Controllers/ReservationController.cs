@@ -91,18 +91,24 @@ namespace Reservation.api.Controllers
 
         public async Task<IActionResult> GetAll()
         {
-            var result = await _RezContext.Reservations.
-                Include(Reservation => Reservation.Name).
-                Include(Reservation => Reservation.StartDate).
-                Include(Reservation => Reservation.EndDate).
-                ToListAsync();
+            try
+            {
+                var reservations = await _RezContext.Reservations.ToListAsync();
+                var reservationDTOs = reservations.Select(reservation => new ReservationDTO
+                {
+                    Id = reservation.Id,
+                    Hour = reservation.StartDate.Hour,
+                    StartDate = reservation.StartDate,
+                    Duration = reservation.EndDate.Subtract(reservation.StartDate).TotalHours
+                }).ToList();
 
-            if (result == null)
-                return NotFound();
+                return Ok(reservationDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while fetching reservations.");
+            }
 
-            var ReservationlList = new List<ReservationDTO>();
-            result.ForEach(Reservation => ReservationlList.Add(new ReservationDTO(Reservation)));
-            return Ok(ReservationlList);
         }
 
     }
